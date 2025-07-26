@@ -24,7 +24,7 @@ Chart.js: Renders interactive charts to visualize product inventory values dynam
 
 OpenAI API: Generates AI-powered product assessments to enhance inventory insights.
 
-LocalStorage via JSON: Client-side persistence of user credentials and product data for quick prototyping.
+Firebase Data Storage: Client-side persistence of user credentials and product data for quick prototyping.
 
 # Challenges we ran into
 
