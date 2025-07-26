@@ -6,16 +6,42 @@
   <title>Ecommerce Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Firebase Core SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+
   <link rel="stylesheet" href="eCommerce.css" />
 </head>
 <body class="min-h-screen" style="background-color: #f9ffe5; color: #111;">
   <!-- Login Page -->
   <div id="auth-screen" class="flex items-center justify-center min-h-screen" style="background-color: #f9ffe5;">
     <div class="p-6 rounded shadow-md w-96 border border-[#2d3236]" style="background-color: #f9ffe5;">
-      <h2 class="text-2xl font-bold mb-4 text-center text-blue-400">Login / Signup</h2>
-      <input type="text" id="auth-username" placeholder="Username" class="w-full mb-3 px-4 py-2 border border-[#2d3236] rounded" style="background-color: #f9ffe5; color: #111;" />
-      <input type="password" id="auth-password" placeholder="Password" class="w-full mb-3 px-4 py-2 border border-[#2d3236] rounded" style="background-color: #f9ffe5; color: #111;" />
-      <button onclick="login()" class="w-full bg-blue-600 text-white py-2 rounded btn">Enter</button>
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-[#4285f4]">SPARK</h1>
+      <p class="text-gray-600">Ignite your sales potential</p>
+    </div>
+    <div id="auth-container" style="text-align:center; padding: 20px;">
+  <h2 style="color:#4285f4;">Login / Signup</h2>
+  <h3 id="auth-mode-label">Log In to Your Account</h3>
+
+  <input type="email" id="auth-email" placeholder="Email" style="display:block; margin: 10px auto; padding: 8px; width: 80%;" />
+  <input type="password" id="auth-password" placeholder="Password" style="display:block; margin: 10px auto; padding: 8px; width: 80%;" />
+
+  <button id="auth-submit-button" onclick="handleAuthSubmit()" style="padding: 10px 20px; background:#4285f4; color:white; border:none; border-radius: 6px; margin-top:10px;">
+    Log In
+  </button>
+
+  <br><br>
+
+  <button id="toggle-auth-button" onclick="toggleAuthMode()" style="background: none; border: none; color: #4285f4; cursor: pointer; font-size: 14px;">
+    Don't have an account? Sign up
+  </button>
+</div>
+
+  </div>
+
+
     </div>
   </div>
 
