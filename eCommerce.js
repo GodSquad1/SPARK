@@ -1,39 +1,112 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyD4Tcj_8NdLDdvFNVl-aT1_eTpq_-dYDHs",
+  authDomain: "spark2-10090.firebaseapp.com",
+  projectId: "spark2-10090",
+  storageBucket: "spark2-10090.firebasestorage.app",
+  messagingSenderId: "19747156251",
+  appId: "1:19747156251:web:591c1f006f5ae20379a3be",
+  measurementId: "G-B5LP5QNJJ5"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+
 let user = null;
 let charts = { salesChart: null };
 
 function getUserData() {
-  const key = user.username + '_data';
+  const key = user.email + '_data';
   const raw = localStorage.getItem(key);
   return raw ? JSON.parse(raw) : { products: [] };
 }
 
 function saveUserData(data) {
-  const key = user.username + '_data';
+  const key = user.email + '_data';
   localStorage.setItem(key, JSON.stringify(data));
 }
 
+
+let isLoginMode = true;
+
+function toggleAuthMode() {
+  isLoginMode = !isLoginMode;
+
+  const modeLabel = document.getElementById('auth-mode-label');
+  const submitButton = document.getElementById('auth-submit-button');
+  const toggleButton = document.getElementById('toggle-auth-button');
+
+  if (isLoginMode) {
+    modeLabel.textContent = "Log In to Your Account";
+    submitButton.textContent = "Log In";
+    toggleButton.textContent = "Don't have an account? Sign up";
+  } else {
+    modeLabel.textContent = "Create a New Account";
+    submitButton.textContent = "Sign Up";
+    toggleButton.textContent = "Already have an account? Log in";
+  }
+}
+
 function login() {
-  const username = document.getElementById('auth-username').value.trim();
+  const email = document.getElementById('auth-email').value.trim();
   const password = document.getElementById('auth-password').value;
 
-  if (!username || !password) {
-    alert('Please fill all fields');
+  if (!email || !password) {
+    alert('Please fill in both email and password');
     return;
   }
 
-  const storedUserRaw = localStorage.getItem(username);
-  if (storedUserRaw) {
-    const storedUser = JSON.parse(storedUserRaw);
-    if (storedUser.password !== password) {
-      alert('Wrong password!');
-      return;
-    }
-    user = storedUser;
-  } else {
-    user = { username, password };
-    localStorage.setItem(username, JSON.stringify(user));
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      console.log('Login successful');
+      const firebaseUser = userCredential.user;
+      user = { email, username: email.split('@')[0] };
+      startApp();
+    })
+    .catch(error => {
+      if (error.code === 'auth/wrong-password') {
+        alert('Incorrect password');
+      } else {
+        alert('Login failed: ' + error.message);
+      }
+    });
+}
+
+function signup() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+
+  if (!email || !password) {
+    alert('Please fill in both email and password');
+    return;
   }
 
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      console.log('Signup successful');
+      const firebaseUser = userCredential.user;
+      user = { email, username: email.split('@')[0] };
+      startApp();
+    })
+    .catch(error => {
+      alert('Signup failed: ' + error.message);
+    });
+}
+
+function handleAuthSubmit() {
+  if (isLoginMode) {
+    login();
+  } else {
+    signup();
+  }
+}
+
+
+
+
+
+function startApp() {
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('main-app').classList.remove('hidden');
   showTab('home');
@@ -41,9 +114,12 @@ function login() {
 }
 
 function logout() {
-  user = null;
-  location.reload();
+  auth.signOut().then(() => {
+    user = null;
+    location.reload();
+  });
 }
+
 
 function showTab(tab) {
   document.querySelectorAll('.tab-content').forEach(div => div.classList.add('hidden'));
@@ -257,7 +333,19 @@ function renderChart() {
 
 // Initialize auth screen on page load
 document.addEventListener('DOMContentLoaded', () => {
-  // No user logged in yet, just show login screen
-  document.getElementById('auth-screen').classList.remove('hidden');
-  document.getElementById('main-app').classList.add('hidden');
+  auth.onAuthStateChanged((firebaseUser) => {
+    if (firebaseUser) {
+      // Extract username from email
+      user = { username: firebaseUser.email.split('@')[0] };
+      startApp();
+    } else {
+      document.getElementById('auth-screen').classList.remove('hidden');
+      document.getElementById('main-app').classList.add('hidden');
+    }
+  });
+});
+
+document.getElementById('login-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  login();
 });
