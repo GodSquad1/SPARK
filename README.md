@@ -24,7 +24,9 @@ Chart.js: Renders interactive charts to visualize product inventory values dynam
 
 OpenAI API: Generates AI-powered product assessments to enhance inventory insights.
 
-Firebase Data Storage: Client-side persistence of user credentials and product data for quick prototyping.
+Firebase Authentication: Manages secure user sign-in to protect inventory data dynamically.
+
+Firebase Data Storage (Coming Soon): Client-side persistence of product data for quick prototyping.
 
 # Challenges we ran into
 
